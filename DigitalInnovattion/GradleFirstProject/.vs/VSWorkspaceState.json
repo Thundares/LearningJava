@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\gradle",
+    "\\gradle\\wrapper",
+    "\\src",
+    "\\src\\test",
+    "\\src\\test\\java",
+    "\\src\\test\\java\\br",
+    "\\src\\test\\java\\br\\com",
+    "\\src\\test\\java\\br\\com\\RKDeveloper",
+    "\\src\\test\\java\\br\\com\\RKDeveloper\\GradleFirstProject"
+  ],
+  "SelectedNode": "\\src\\main\\java\\br\\com\\RKDeveloper\\GradleFirstProject\\GradleFirstProjectApplication.java",
+  "PreviewInSolutionExplorer": false
+}
