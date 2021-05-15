@@ -10,6 +10,7 @@ public class App {
 
         try {
 
+            long initialTime = System.currentTimeMillis();
             int n = 2000000000;
             FunctionN firstThread = new FunctionN(n);
             FunctionNsquare secondThread = new FunctionNsquare(n);
@@ -20,12 +21,16 @@ public class App {
             nSquare.start();            
             justN.start();
 
+            boolean checkN = false;
+            boolean checkNSquare = false;
             while(true) {
-                if (justN.isInterrupted()) {
-                    throw new InterruptedException();
+                if (!justN.isAlive() && !checkN) {
+                    System.out.println("O(n) = n has finished in "+ (System.currentTimeMillis() - initialTime) +" miliseconds.");
+                    checkN = true;
                 }
-                if (nSquare.isInterrupted()) {
-                    throw new InterruptedException();
+                if (!nSquare.isAlive() && !checkNSquare) {
+                    System.out.println("O(n) = n^2 has finished in "+ (System.currentTimeMillis() - initialTime) +" miliseconds.");
+                    checkNSquare = true;
                 }
 
                 if(!justN.isAlive() && !nSquare.isAlive()) {
