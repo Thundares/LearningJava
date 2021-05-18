@@ -11,8 +11,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Function;
 
@@ -28,16 +27,24 @@ public class App {
 
         // create executor
         ExecutorService executor = Executors.newFixedThreadPool(4);
+        Future<Integer> future;
 
         // multiply every element of the array by 2
-        multiplyArrayAsync(arraySample, executor);
+        for (int i = 0; i < arraySample.length; i++) {
+            future = executor.submit(new multiplyCallable(i, arraySample));
+            try {
+                arraySample[i] = future.get();
+            } catch (Exception e) {
+                System.out.println("Error to multiply the array.");
+            }
+        }
 
         // finish executor
-        while(true) {
-            if (executor.isTerminated()) {
-                executor.shutdown();
-                break;
-            }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(1, TimeUnit.DAYS);
+        } catch (Exception e) {
+            System.out.println("Failed to wait function");
         }
 
         // print final result
@@ -59,37 +66,22 @@ public class App {
             System.out.println("ArraySample [" + i + "] == "+ array[i]);
         }
     }
+}
 
-    public static void multiplyArrayAsync(int[] array, Executor exec) {
-        try {
-            
-            // create runnable
-            /*
-            BiConsumer<Integer, int[]> multiplyTask = (index, arrayReference) -> {
-                arrayReference[index] *= 2;
-            };
-            */
-        
-            for (Integer i = 0; i < array.length; i++) {
-                Runnable multiplyTask = multRunnable(i, array);
-                exec.execute(multiplyTask(i,array));
-            }
-        
-        
-        } catch (Exception e) {
-            throw new Exception("Failed to multiply array");
-        }
+class multiplyCallable implements Callable<Integer> {
+
+    int index;
+    int[] array;
+
+    public multiplyCallable(Integer index, int[] array) {
+        this.index = index;
+        this.array = array;
     }
 
-    private Runnable multRunnable(int index, int[] arrayRef){
-        
-        Runnable auxRun = new Runnable(){
-            @Override
-            public void run(){
-                arrayRef[index] *= 2;
-            }
-        };
-
-        return auxRun;
+    @Override
+    public Integer call() throws Exception {
+        array[index] *= 2;
+        return array[index];
     }
+
 }
